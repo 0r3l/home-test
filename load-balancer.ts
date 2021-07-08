@@ -9,6 +9,7 @@ export class LoadBalancer {
   private _serversSizes: number[] = new Array(this.servers.length).fill(0);
 
   get serversSizes(){
+    // immutable
     return [...this._serversSizes];
   }
 
@@ -17,8 +18,6 @@ export class LoadBalancer {
     const server = this.clientsToservers.get(clientId) as Server;
 
     const isServerUp =  this.serversAvailability[this.servers.indexOf(server)];
-
-   //console.log(`${clientId} ${server} ${isServerUp}`)
 
 
     if (!server || !isServerUp) {
@@ -34,13 +33,14 @@ export class LoadBalancer {
   // availability
   onServerDown(s: Server) {
     const index = this.servers.indexOf(s);
-    console.log('index ' + index);
     this.serversAvailability[index] = false;
-    this._serversSizes[index] = 0;
+    this._serversSizes[index] = Number.MAX_SAFE_INTEGER;
   }
 
   onServerUp(s: Server) {
-    this.serversAvailability[this.servers.indexOf(s)] = true;
+    const index = this.servers.indexOf(s);
+    this.serversAvailability[index] = true;
+    this._serversSizes[index] = 0;
   }
 
   // fair

@@ -22,13 +22,13 @@ test('should return S2 and update server sizes correctly', () => {
 });
 
 
-test('should ignore server when availability changed', () => {
+test('should ignore server S2 when availability changed', () => {
   const lb = new LoadBalancer();
   lb.forward('client-1');
   lb.forward('client-2');
   lb.forward('client-3');
   lb.onServerDown('S2')
   lb.forward('client-4');
-  lb.forward('client-5');
-  expect(lb.serversSizes).toEqual([2,1,1]);
+  const server = lb.forward('client-5');
+  expect(server).toEqual('S3');
 });
